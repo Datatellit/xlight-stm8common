@@ -3,6 +3,10 @@
 
 #include <stm8s.h> //Required for the stdint typedefs
 
+#ifndef RF24
+#define RF24
+#endif
+
 #define ADDRESS_WIDTH                   5
 #define PLOAD_WIDTH                     32
 

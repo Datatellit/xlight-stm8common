@@ -100,4 +100,6 @@
 #define SYS_WAIT_PRESENTED              3
 #define SYS_RUNNING                     5
 
+#define UNIQUE_ID_LEN           8
+
 #endif /* _PUBLICDEFINE_H */

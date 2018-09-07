@@ -48,7 +48,10 @@ typedef enum { RF24_1MBPS = 0, RF24_2MBPS, RF24_250KBPS } rf24_datarate_e;
 #define PROTOCOL_VERSION 1
 #define MAX_MESSAGE_LENGTH 32
 #define HEADER_SIZE 7
+#define UNIQUE_SIZE 8
+#define HEADERNEW_SIZE 15
 #define MAX_PAYLOAD (MAX_MESSAGE_LENGTH - HEADER_SIZE)
+#define MAX_PAYLOADNEW (MAX_MESSAGE_LENGTH - HEADERNEW_SIZE)
 
 // Message types
 typedef enum {
@@ -285,6 +288,18 @@ typedef struct
 	uint8_t sensor;          	 	// 8 bit - Id of sensor that this message concerns.
 } MyMsgHeader_t;
 
+typedef struct
+{
+	uint8_t last;            	 	
+	uint8_t sender;          
+	uint8_t destination;    
+	uint8_t version_length;				             			                 
+	uint8_t command_ack_payload; 
+	uint8_t type;           	 	
+	uint8_t sensor;  
+        uint8_t uniqueid[UNIQUE_SIZE];
+} MyMsgHeaderNew_t;
+
 // Each message can transfer a payload. We add one extra byte for string
 // terminator \0 to be "printable" this is not transferred OTA
 // This union is used to simplify the construction of the binary data types transferred.
@@ -312,7 +327,18 @@ typedef struct
 	MyMsgPayload_t payload;
 } MyMessage_t;
 
-extern MyMessage_t sndMsg, rcvMsg;
+typedef struct
+{
+	MyMsgHeaderNew_t header;
+	MyMsgPayload_t payload;
+} MyMessageNew_t;
+
+#ifdef ENABLE_SDTM
+extern MyMessageNew_t rcvMsg;
+#else
+extern MyMessage_t rcvMsg;
+#endif
+extern MyMessage_t sndMsg;
 extern uint8_t *psndMsg;
 extern uint8_t *prcvMsg;
 
