@@ -1,7 +1,6 @@
 #include <stm8s.h>
 #include "timer_2.h"
 #include "wwdg.h"
-#include "_global.h"
 
 void TIM2_Init(void)
 {
