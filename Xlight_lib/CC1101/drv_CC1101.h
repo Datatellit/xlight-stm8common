@@ -83,7 +83,7 @@ void CC1101_Clear_TxBuffer( void );
 void CC1101_Clear_RxBuffer( void );
 void CC1101_Tx_Packet( uint8_t *pTxBuff, uint8_t TxSize,uint8_t to, CC1101_TxDataModeType DataMode );
 uint8_t CC1101_Get_RxCounter( void );
-uint8_t CC1101_Rx_Packet( uint8_t *RxBuff,uint8_t *bResetRx );
+uint8_t CC1101_Rx_Packet( uint8_t *RxBuff);
 void CC1101_Reset( void );
 void CC1101_Init( );
 void CC1101_Setup( uint8_t channel,uint8_t addr);

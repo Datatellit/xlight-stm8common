@@ -1,6 +1,7 @@
 #include <stm8s.h>
 
 #include "delay.h"
+#include "wwdg.h"
 
 void delay_ms(u16 time_ms)   // ms
 {
@@ -10,6 +11,9 @@ void delay_ms(u16 time_ms)   // ms
     time_ms--;
     tick = 0xa6a;
     while (tick--);
+#ifndef DEBUG_NO_WWDG
+    feed_wwdg();
+#endif
   }
 }
 
@@ -22,5 +26,8 @@ void delay_10us(u16 time_10us)
     time_10us--;
     tick = 0x1a;
     while (tick--);
+#ifndef DEBUG_NO_WWDG
+    feed_wwdg();
+#endif
   }
 }
