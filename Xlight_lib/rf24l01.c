@@ -1,6 +1,7 @@
 #include "rf24l01.h"
 #include "MyMessage.h"
 #include "Uart2Dev.h"
+#include "string.h"
 #include <stm8s_spi.h>
 #include <stm8s_gpio.h>
 uint8_t rx_addr[ADDRESS_WIDTH];
