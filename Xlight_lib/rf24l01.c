@@ -440,7 +440,6 @@ RF24L01_reg_STATUS_content RF24L01_get_status_timeout(void) {
 		status = 1;
 		return *((RF24L01_reg_STATUS_content *) &status);
 	}
-	while (SPI_GetFlagStatus(SPI_FLAG_TXE)== RESET);
 	SPI_SendData(RF24L01_command_NOP);
 	if(wait_flag_status(SPI_FLAG_BSY,SET))
 	{
