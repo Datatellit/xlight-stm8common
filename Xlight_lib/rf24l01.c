@@ -364,6 +364,18 @@ int8_t RF24L01_set_mode_TX_timeout(void) {
 	return 0;
 }
 
+void RF24L01_Powerdown(void) {
+  RF24L01_reg_CONFIG_content config;
+  *((uint8_t *)&config) = 0;
+  config.PWR_UP = 0;
+  config.PRIM_RX = 1;
+  config.EN_CRC = 1;
+  config.CRCO = 1;
+  config.MASK_MAX_RT = 0;
+  config.MASK_TX_DS = 0;
+  config.MASK_RX_DR = 0;
+  RF24L01_write_register(RF24L01_reg_CONFIG, ((uint8_t *)&config), 1);
+}
 
 void RF24L01_set_mode_RX(void) {
   RF24L01_reg_CONFIG_content config;
