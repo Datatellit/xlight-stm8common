@@ -16,6 +16,7 @@
 
 #include "drv_CC1101.h"
 #include "delay.h"
+#include "_global.h"
 
 
 //10, 7, 5, 0, -5, -10, -15, -20, dbm output power, 0x12 == -30dbm
@@ -187,15 +188,23 @@ void CC1101_Set_Mode( CC1101_ModeType Mode )
     if( Mode == TX_MODE )			//发送模式
     {
         CC1101_Write_Reg( CC1101_IOCFG0,0x46 );
-        CC1101_Write_Cmd( CC1101_STX );		
+        CC1101_Write_Cmd( CC1101_STX );	
+        // 2kbps 32+3 byte need almost 130ms
+        delay_ms(100);	
     }
     else if( Mode == RX_MODE )		//接收模式
     {
         CC1101_Write_Reg(CC1101_IOCFG0,0x46);
         CC1101_Write_Cmd( CC1101_SRX );
+        delay_ms(10);	
     }
-    delay_ms(150);
-    //while( 0 != CC1101_GET_GDO0_STATUS( ));		//等待发送 或 接收开始
+    //delay_ms(150);	
+    //uint8_t timeout = 0;
+    //while( 0 != CC1101_GET_GDO0_STATUS( ));
+    /*{
+      if(timeout++ >= 150) break;
+      delay_ms(1);
+    }*/
 }
 
 /**
@@ -222,7 +231,7 @@ void C1101_WOR_Init( void )
     CC1101_Write_Reg(CC1101_MCSM2,0x00);
     CC1101_Write_Reg(CC1101_WOREVT1,0x8C);
     CC1101_Write_Reg(CC1101_WOREVT0,0xA0);
-	CC1101_Write_Cmd( CC1101_SWORRST );		//写入WOR命令
+    CC1101_Write_Cmd( CC1101_SWORRST );		//写入WOR命令
 }
 
 /**
@@ -309,6 +318,7 @@ void CC1101_Clear_RxBuffer( void )
   */ 
 void CC1101_Tx_Packet( uint8_t *pTxBuff, uint8_t TxSize,uint8_t to, CC1101_TxDataModeType DataMode )
 {
+  //PB1_High;
     uint8_t Address;
 	uint16_t l_RxWaitTimeout = 0;
 	
@@ -344,9 +354,11 @@ void CC1101_Tx_Packet( uint8_t *pTxBuff, uint8_t TxSize,uint8_t to, CC1101_TxDat
 		{
 			l_RxWaitTimeout = 0;
 			CC1101_Init( );
+                        //PB2_High;
 			break; 
 		} 
 	} 
+  //PB1_Low;
 }
 
 /**
@@ -368,8 +380,9 @@ uint8_t CC1101_Get_RxCounter( void )
   * @retval：接收到的字节数，0表示无数据
   */
 
-uint8_t CC1101_Rx_Packet( uint8_t *RxBuff,uint8_t *bResetRx )
+uint8_t CC1101_Rx_Packet( uint8_t *RxBuff)
 {
+  //PD2_High;
 	uint8_t l_PktLen = 0;
     uint8_t l_Status[ 2 ] = { 0 };
 	uint16_t l_RxWaitTimeout = 0;
@@ -381,6 +394,7 @@ uint8_t CC1101_Rx_Packet( uint8_t *RxBuff,uint8_t *bResetRx )
 		{
 			l_RxWaitTimeout = 0;
 			CC1101_Init( );
+                        //PD0_High;
 			break; 
 		} 
 	}
@@ -395,6 +409,7 @@ uint8_t CC1101_Rx_Packet( uint8_t *RxBuff,uint8_t *bResetRx )
         }
         if( l_PktLen == 0 )           
 		{
+                        //PD2_Low;
 			return 0;			//无数据
 		}
         else
@@ -404,28 +419,30 @@ uint8_t CC1101_Rx_Packet( uint8_t *RxBuff,uint8_t *bResetRx )
 
         if(l_PktLen - 1 >=  PLOAD_WIDTH)
         {
-          recvnum = l_PktLen;
+          //recvnum = l_PktLen;
           CC1101_Clear_RxBuffer( );
-          *bResetRx = 1;
+          //PD2_Low;
           return 0; 
         }
         CC1101_Read_Multi_Reg( CC1101_RXFIFO, RxBuff, l_PktLen ); 	//读取数据
         CC1101_Read_Multi_Reg( CC1101_RXFIFO, l_Status, 2 );		//读取数据包最后两个额外字节，后一个为CRC标志位
 
         CC1101_Clear_RxBuffer( );
-        *bResetRx = 1;
 
         if( l_Status[ 1 ] & CRC_OK )
 		{   
+                        //PD2_Low;
 			return l_PktLen; 
 		}
         else
 		{   
+                        //PD2_Low;
 			return 0; 
 		}
     }
     else   
 	{  
+                //PD2_Low;
 		return 0; 
 	}                              
 }

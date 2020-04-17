@@ -20,6 +20,7 @@
 
 #define NCF_DEV_SET_RF                  17      // Set base rf info(nodeid[:rfchannel][:subid])
 #define NCF_DEV_SET_REMOTE              18      // Set remote uniqueid
+#define NCF_DEV_SET_SENSOR              19      // Set sensor adjust formula
 
 #define NCF_PAN_SET_BTN_1               20      // Set Panel Button Action, payload length = 2
 #define NCF_PAN_SET_BTN_2               21      // Set Panel Button Action, payload length = 2
