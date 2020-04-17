@@ -1,6 +1,7 @@
 #include "rf24l01.h"
 #include "MyMessage.h"
 #include "Uart2Dev.h"
+#include "string.h"
 #include <stm8s_spi.h>
 #include <stm8s_gpio.h>
 uint8_t rx_addr[ADDRESS_WIDTH];
@@ -363,6 +364,18 @@ int8_t RF24L01_set_mode_TX_timeout(void) {
 	return 0;
 }
 
+void RF24L01_Powerdown(void) {
+  RF24L01_reg_CONFIG_content config;
+  *((uint8_t *)&config) = 0;
+  config.PWR_UP = 0;
+  config.PRIM_RX = 1;
+  config.EN_CRC = 1;
+  config.CRCO = 1;
+  config.MASK_MAX_RT = 0;
+  config.MASK_TX_DS = 0;
+  config.MASK_RX_DR = 0;
+  RF24L01_write_register(RF24L01_reg_CONFIG, ((uint8_t *)&config), 1);
+}
 
 void RF24L01_set_mode_RX(void) {
   RF24L01_reg_CONFIG_content config;
@@ -440,7 +453,6 @@ RF24L01_reg_STATUS_content RF24L01_get_status_timeout(void) {
 		status = 1;
 		return *((RF24L01_reg_STATUS_content *) &status);
 	}
-	while (SPI_GetFlagStatus(SPI_FLAG_TXE)== RESET);
 	SPI_SendData(RF24L01_command_NOP);
 	if(wait_flag_status(SPI_FLAG_BSY,SET))
 	{

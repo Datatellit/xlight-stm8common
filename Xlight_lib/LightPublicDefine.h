@@ -27,6 +27,7 @@
 #define FILTER_SP_EF_FAST_BREATH    2       // Fast breathing light
 #define FILTER_SP_EF_FLORID         3       // Randomly altering color
 #define FILTER_SP_EF_FAST_FLORID    4       // Fast randomly altering color
+#define FILTER_SP_EF_GRADUAL_CHANGE 5      // gradual change from x to y by time
 
 // Delayed operation timers
 #define DELAY_TIMERS            8

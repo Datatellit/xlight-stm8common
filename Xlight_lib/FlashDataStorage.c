@@ -1,5 +1,6 @@
 #include "FlashDataStorage.h"
 #include "Uart2Dev.h"
+#include "string.h"
 uint8_t flashWritting = 0;
 
 int8_t wait_flashflag_status(uint8_t flag,uint8_t status)
